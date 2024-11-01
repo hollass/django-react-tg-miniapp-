@@ -6,8 +6,9 @@ const serverUrl = 'http://localhost:8000/api'
 // @ts-ignore
 const TG = window.Telegram.WebApp
 
-async function request(endpoint, method = "POST", data?:any) {
-    const options:RequestInit = {
+async function request(endpoint, method = "POST", data?: any) {
+
+    const options: RequestInit = {
         method: method,
         headers: {
             Authorization: TG.initData,

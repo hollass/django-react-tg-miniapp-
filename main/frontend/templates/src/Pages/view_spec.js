@@ -34,16 +34,14 @@ export default function List_doctors() {
                                        alt={item.name}
                                        className={'chat_item_img'}
                                        style={{
-                                           width: '25%',
+                                           width: '30%',
                                            marginRight: '1em',
                                            borderRadius: '15px'
                                        }}/>
-                                <div className={'chat_item_info'} style={{
-                                    color: 'black'
-                                }}>
-                                    <h2>{item.name}</h2>
+                                <div className={'chat_item_info'}>
+                                    <h4>{item.name}</h4>
                                     {/*<p style={{marginBottom: 0}}>{item.about}</p>*/}
-                                    <p>Стаж работы: <b>{item.score}</b></p>
+                                    <p>Стаж работы: <h6>{item.score}</h6></p>
                                 </div>
                             </div>
                         </Link>

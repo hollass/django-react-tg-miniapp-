@@ -107,11 +107,11 @@ export default function View_doctor() {
                     {price.length === 1 ? (
                         <div>
                             <hr/>
-                            <h3>Услуга</h3>
-                            <b>{price[0].name}</b>
+                            <p>Услуга</p>
+                            <h5>{price[0].name}</h5>
                             <br/>
-                            <h3>Стоимость</h3>
-                            <b>{price[0].price}₽</b>
+                            <p>Стоимость</p>
+                            <h5>{price[0].price}₽</h5>
                             <hr/>
                         </div>
                     ) : (
@@ -122,7 +122,7 @@ export default function View_doctor() {
                             <Dropdown.Menu>
                                 {price.map((item) => (
                                     <Dropdown.Item style={{whiteSpace: 'pre-wrap'}} key={item.id}>
-                                        {item.name} - {item.price}₽
+                                        <p>{item.name} - {item.price}₽</p>
                                     </Dropdown.Item>
                                 ))}
                             </Dropdown.Menu>
@@ -130,9 +130,9 @@ export default function View_doctor() {
                     )}
                 </div>
                 <div className={'view_ac-date'}>
-                    <h2>
+                    <p>
                         Выберите дату для записи
-                    </h2>
+                    </p>
                     <div className={'date_list'}>
                         <Swiper center={true} score={3}>
                             {uniqueDates.map((item, index) => {
@@ -141,14 +141,14 @@ export default function View_doctor() {
                                     <div key={item.id}
                                          className={`block ${selectedDate === item ? 'selected' : ''}`}
                                          onClick={() => handleDateSelect(item)}>
-                                        <p>{date} </p>
-                                        <p>{day}</p>
+                                        <h6>{date} </h6>
+                                        <h6>{day}</h6>
                                     </div>)
                             })}
                         </Swiper>
                     </div>
                     <div className={'date_list'}>
-                        <h2>Выберите время для записи</h2>
+                        <p>Выберите время для записи</p>
                         <Swiper score={4}>
                             {availableTimes.map((item, index) => (
                                 <div
@@ -156,7 +156,7 @@ export default function View_doctor() {
                                     className={`block ${selectedtime === item ? 'selected' : ''}`}
                                     onClick={() => handleBlockTime(item)}
                                 >
-                                    <p>{item}</p>
+                                    <h6>{item}</h6>
                                 </div>
                             ))}
                         </Swiper>

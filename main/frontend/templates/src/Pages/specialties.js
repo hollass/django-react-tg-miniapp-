@@ -151,8 +151,8 @@ export default function Specialties() {
                                 variant={'link'}
                                 value={itemid}
                                 onClick={() => updateItems(item.id)}>
-                            <p>{item.name} </p>
-                            <h6> {item.score}</h6>
+                            <h6>{item.name} </h6>
+                            <p> {item.score}</p>
                         </Button>
                     ))}
                 </Swiper>
@@ -161,10 +161,11 @@ export default function Specialties() {
                 <h4>Лучшие врачи в специализации</h4>
                 <Swiper score={2} center={true}>
                     {allItems.slice(0, 5).map((doctor) => (
-                        <div className={'spec-page-doctor'}>
+                        <Button type={'submit'}
+                                variant={'link'} className={'spec-page-doctor text-decoration-none'}>
                             <Image width={'150'} src={doctor.img}/>
                             <p>{doctor.name}</p>
-                        </div>
+                        </Button>
                     ))}
                 </Swiper>
             </div>
