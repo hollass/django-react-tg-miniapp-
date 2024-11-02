@@ -1,25 +1,24 @@
 from datetime import datetime
 
-from django.contrib.auth import  get_user_model
+from django.contrib.auth import get_user_model
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from aiogram.utils.web_app import safe_parse_webapp_init_data
+
+from .config import token
 from .models import Categorie, Doctor, Price, Scheduled, Record
+import hmac
+import hashlib
+import urllib.parse
+from urllib.parse import unquote
+import json
 
 User = get_user_model()
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def auth(request):
-    try:
-        auth_string = request.headers.get('Authorization', None)
-        if auth_string is None:
-            return Response(data={'error': 'No Authorization header'}, status=status.HTTP_401_UNAUTHORIZED)
-        else:
-            data = safe_parse_webapp_init_data(token, auth_string)
-            return Response(data=data, status=status.HTTP_200_OK)
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def view_cats(request):
@@ -155,6 +154,7 @@ def view_sched(request):
 
     return Response(data=schedules_data, status=status.HTTP_200_OK)
 
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def add_record(request):
@@ -198,7 +198,7 @@ def view_records(request):
             'img': '',
         }
         doc = User.objects.get(id=i.doctor.doctor_id)
-        prod = Price.objects.get(id =i.prod)
+        prod = Price.objects.get(id=i.prod)
         record['id'] = i.id
         record['date'] = i.date.strftime('%d.%m.%Y')
         record['time'] = i.time
@@ -215,8 +215,18 @@ def view_records(request):
 @permission_classes([AllowAny])
 def view_main(request):
     data = request.data
+    #Регистрация
+    parsed_data = urllib.parse.parse_qs(request.headers['Authorization'])
+    user_data = json.loads(urllib.parse.unquote(parsed_data['user'][0]))
+    if not User.objects.filter(username=user_data['id']).exists():
+        user = User.objects.create_user(
+            username=user_data['id'],
+            userid=user_data['id'],
+            first_name=user_data['first_name'])
+        user.save()
     cats = Categorie.objects.all()
     cats_data = []
+
     for i in cats:
         cat = {
             'id': '',
@@ -229,11 +239,11 @@ def view_main(request):
         cat['img'] = i.img
         cats_data.append(cat)
     doc = {
-        'id':'',
-        'name':'',
-        'age':'',
-        'cat':'',
-        'img':''
+        'id': '',
+        'name': '',
+        'age': '',
+        'cat': '',
+        'img': ''
     }
     list_docs = []
     docs = Doctor.objects.all()[:data['num']]
