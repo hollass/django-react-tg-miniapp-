@@ -56,7 +56,6 @@ export default function Home() {
     ]
     const [cats, setcats] = useState([]);
     const [doctors, setdocs] = useState([]);
-    console.log(TG.ThemeParams)
 
 
     const addsh = () => {
@@ -129,11 +128,12 @@ export default function Home() {
                 <div className={'spec-list'}>
                     <Swiper center={true} score={2}>
                         {cats.map((cat, i) => (
-                            <div className={'spec-list'}>
+                            <Link to={`/spec/${cat.id}`}
+                              key={cat.id} className={'spec-list'}>
                                 <div className={'spec-item'}>
                                     <p>{cat.name}</p>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </Swiper>
 

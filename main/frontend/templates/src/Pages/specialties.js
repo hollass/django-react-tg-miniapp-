@@ -5,137 +5,34 @@ import React, {useEffect, useState} from 'react';
 import {Button, Image} from "react-bootstrap";
 import "react-multi-carousel/lib/styles.css";
 import Swiper from "../Components/swiper";
+import {request} from "../Components/api";
+import {Link} from "react-router-dom";
 
 export default function Specialties() {
-    const special = [
-        {
-            name: "Терапевт", id: 1, score: 2, doctors: [
-                {
-                    name: "Терапевт 1",
-                    id: 1,
-                    img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Терапевт 2", id: 2, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Терапевт 3", id: 4, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Терапевт 3", id: 5, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Терапевт 3", id: 6, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Терапевт 3", id: 7, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Терапевт 3", id: 8, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-            ]
-        },
-        {
-            name: "Педиатр", id: 2, score: 5, doctors: [
-                {
-                    name: "Педиатр 1", id: 9, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Педиатр 2", id: 10, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Педиатр 3", id: 11, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                }
-            ]
-        },
-        {
-            name: "Хирург", id: 3, score: 8, doctors: [
-                {
-                    name: "Хирург 1", id: 12, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Хирург 2", id: 13, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Хирург 3", id: 14, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                }
-            ]
-        },
-        {
-            name: "Уролог", id: 4, score: 22, doctors: [
-                {
-                    name: "Уролог 1", id: 15, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Уролог 2", id: 16, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Уролог 3", id: 17, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                }
-            ]
-        },
-        {
-            name: "Офтальмолог", id: 5, score: 1, doctors: [
-                {
-                    name: "Офтальмолог 1", id: 18, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Офтальмолог 2", id: 19, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Офтальмолог 3", id: 20, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-            ]
-        },
-        {
-            name: "Стоматолог", id: 6, score: 33, doctors: [
-                {
-                    name: "Стоматолог 1", id: 21, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Стоматолог 2", id: 22, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-                {
-                    name: "Стоматолог 3", id: 23, img: 'https://via.placeholder.com/150',
-                    about: "Врач, Профессор"
-                },
-            ]
-        },
-    ]
-    const [itemid, setItem] = useState(1)
     const [allItems, setAll] = useState([])
+    const [cat, setCat] = useState([])
+    const [itemid, setItem] = useState()
 
+    const cats = () => {
+        request('view_cats/', "POST").then(result => {
+            setCat(result)
+            setItem(result[0].id)
+            updateItems(result[0].id)
+        });
+    }
+    const specialty = (id) => {
+        request('view_spec/', "POST", {id: id}).then(result => setAll(result));
+    }
 
     useEffect(() => {
-        updateItems()
+        cats()
+
     }, [])
 
-    function updateItems(id = 1) {
-        const all = special.filter((item) => item.id === id)[0]
-        setItem(id)
-        setAll(all.doctors)
 
+    function updateItems(id) {
+        setItem(id)
+        specialty(id)
     }
 
     return (
@@ -144,7 +41,7 @@ export default function Specialties() {
 
             <div className={'spec-page-list'}>
                 <Swiper score={2} center={true}>
-                    {special.map((item) => (
+                    {cat.map((item) => (
                         <Button type={'submit'}
                                 className={'spec-page-item text-decoration-none '}
                                 key={item.id}
@@ -152,7 +49,7 @@ export default function Specialties() {
                                 value={itemid}
                                 onClick={() => updateItems(item.id)}>
                             <h6>{item.name} </h6>
-                            <p> {item.score}</p>
+                            <p> {item.num}</p>
                         </Button>
                     ))}
                 </Swiper>
@@ -161,11 +58,11 @@ export default function Specialties() {
                 <h4>Лучшие врачи в специализации</h4>
                 <Swiper score={2} center={true}>
                     {allItems.slice(0, 5).map((doctor) => (
-                        <Button type={'submit'}
-                                variant={'link'} className={'spec-page-doctor text-decoration-none'}>
-                            <Image width={'150'} src={doctor.img}/>
-                            <p>{doctor.name}</p>
-                        </Button>
+                        <Link to={`/service/all/doctor/${doctor.id}/`}
+                              className={'spec-page-doctor text-decoration-none'}>
+                            <Image src={doctor.img}/>
+                            <h6>{doctor.name}</h6>
+                        </Link>
                     ))}
                 </Swiper>
             </div>

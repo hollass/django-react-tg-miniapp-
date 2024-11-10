@@ -20,10 +20,11 @@ export default function List_doctors() {
     return (
         <div className={'chats_page'} style={{margin: '1em'}}>
             <h1>Врачи</h1>
+            <hr/>
             <div className={'chats_list'}>
                 <Row>
                     {item.map(item => (
-                        <Link to={`/service/${doctorId}/doctor/${item.id}`}
+                        <Link to={`/service/${doctorId}/doctor/${item.id}/`}
                         >
                             <div className={'chat_item'}
                                  style={{
@@ -66,8 +67,9 @@ export function List_product() {
     }
 
     return (
-        <div className={'chats_page'} style={{margin: '1em'}}>
+        <div className={'chats_page'}>
             <h1>Услуги</h1>
+            <hr/>
             <div className={'chats_list'}>
                 <Row>
                     {item.map(item => (
@@ -79,10 +81,8 @@ export function List_product() {
                                      padding: '1em',
                                  }}>
 
-                                <div className={'chat_item_info'} style={{
-                                    color: 'black'
-                                }}>
-                                    <h2>{item.name}</h2>
+                                <div className={'chat_item_info'}>
+                                    <h3>{item.name}</h3>
                                 </div>
                                 <hr/>
                             </div>

@@ -16,20 +16,23 @@ import {request} from "../Components/api";
 export default function View_doctor() {
     const params = useParams();
     const doctorId = params.parent;
-    const prod = params.id;
+    const [prod, setProd] = useState(params.id)
 
-    const [itemid, setItem] = useState({})
+    const [itemid, setItem] = useState([])
+    const [allitemid, setallItem] = useState([])
     const [selectedtime, setSelectedtime] = useState(null);
     const [data, setData] = useState([]);
     const [selectedDate, setSelectedDate] = useState('');
     const [availableTimes, setAvailableTimes] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [showButton, setshowButton] = useState(false);
+
     const handleSubmit = () => {
         setShowModal(true);
         add_record();
         setTimeout(() => {
-            window.location.href = '/'; // перенаправление на главную страницу
-        }, 2000); // задержка перед перенаправлением
+            window.location.href = '/';
+        }, 2000);
     };
     const handleBlockTime = (blockId) => {
         setSelectedtime(blockId);
@@ -41,29 +44,36 @@ export default function View_doctor() {
     }, [])
 
     const whatDoctor = () => {
+        specialty(prod)
         if (prod === 'all') {
-            specialty(prod)
+            setshowButton(true)
             addsh()
-        } else {
-            specialty(prod)
         }
+
     }
 
 
     const addsh = () => {
-        request('view_sched/',"POST", {id: doctorId})
+        request('view_sched/', "POST", {id: doctorId})
             .then(result => setData(result))
             .catch(error => console.error('Error fetching data:', error));
     }
 
 
     const specialty = (type) => {
-        request('view_cat/',"POST", {id: doctorId, product: type})
-            .then(result => setItem(result));
+        request('view_cat/', "POST", {id: doctorId, product: type})
+            .then(result => {
+                setItem(result)
+                if (prod !== 'all') {
+                    setallItem(result.prices[0])
+                } else {
+                    setallItem(result.prices)
+                }
+
+            });
     }
     const add_record = () => {
-        request('add_record/',"POST", {
-            user_id: 1,
+        request('add_record/', "POST", {
             doctor_id: doctorId,
             prod: prod,
             date: selectedDate,
@@ -72,7 +82,12 @@ export default function View_doctor() {
             .then(result => console.log(result))
     }
 
-    const price = itemid.price || []
+    const handleSelect = (eventKey = '') => {
+        const data = eventKey.split(',')
+        setallItem({'name': data[1], 'price': data[2]})
+        setProd(data[0])
+        setshowButton(false)
+    };
     const handleDateSelect = (date) => {
         setSelectedDate(date);
         const times = data
@@ -85,6 +100,7 @@ export default function View_doctor() {
     return (
         <div className={'view_ac'}>
             <h1>Запись</h1>
+            <hr/>
             <div className={'view_ac-name'}>
                 <div className={'view_ac-photo'}>
                     <Image
@@ -104,30 +120,31 @@ export default function View_doctor() {
             </div>
             <div className={'view_ac-about'}>
                 <div className={'view_ac-price'}>
-                    {price.length === 1 ? (
+                    {showButton ? (
+                            <Dropdown onSelect={handleSelect}>
+                                <Dropdown.Toggle className={'price-btn'} variant="success" id="dropdown-basic">
+                                    Услуги
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    {allitemid.map((item) => (
+                                        <Dropdown.Item style={{whiteSpace: 'pre-wrap'}}
+                                                       eventKey={[item.id, item.name, item.price]}>
+                                            <p>{item.name} - {item.price}₽</p>
+                                        </Dropdown.Item>
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>)
+                        :
                         <div>
                             <hr/>
                             <p>Услуга</p>
-                            <h5>{price[0].name}</h5>
+                            <h5>{allitemid.name}</h5>
                             <br/>
                             <p>Стоимость</p>
-                            <h5>{price[0].price}₽</h5>
+                            <h5>{allitemid.price}₽</h5>
                             <hr/>
                         </div>
-                    ) : (
-                        <Dropdown>
-                            <Dropdown.Toggle className={'price-btn'} variant="success" id="dropdown-basic">
-                                Услуги
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                {price.map((item) => (
-                                    <Dropdown.Item style={{whiteSpace: 'pre-wrap'}} key={item.id}>
-                                        <p>{item.name} - {item.price}₽</p>
-                                    </Dropdown.Item>
-                                ))}
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    )}
+                    }
                 </div>
                 <div className={'view_ac-date'}>
                     <p>
@@ -179,8 +196,8 @@ export default function View_doctor() {
             <Modal
                 show={showModal}
                 onHide={() => setShowModal(false)}
-                centered // Центрируем модальное окно
-                className="custom-modal" // Применяем кастомные стили
+                centered
+                className="custom-modal"
             >
                 <Modal.Header closeButton className="modal-header">
                     <Modal.Title>Успех</Modal.Title>

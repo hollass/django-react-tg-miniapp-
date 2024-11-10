@@ -1,10 +1,13 @@
 :root {
     background-color: var(--tg-theme-bg-color);
+    max-width: 540px !important;
 }
 
 .med_app {
     margin-bottom: 30%;
     background-color: var(--tg-theme-bg-color);
+    max-width: 540px !important;
+
 
 }
 
@@ -303,14 +306,19 @@ h1, h2, h3, h4, h5, h6 {
         background-color: var(--tg-theme-header-bg-color);
 
 
+
         .spec-page-doctor {
             margin-right: 0.5em;
             background-color: var(--tg-theme-section-bg-color);;
             border-radius: 20px;
             padding: 0.5em;
+            max-width: 40%;
 
             img {
-                width: 100%;
+                width: 150px;
+                height: 200px;
+                border-radius: 10px;
+                object-fit: cover;
             }
 
         }
@@ -328,10 +336,12 @@ h1, h2, h3, h4, h5, h6 {
 
             img {
                 margin: 0.5em;
+                border-radius: 10px;
             }
 
             .name-doctor {
                 display: block;
+                padding: 0.5em;
             }
         }
     }
@@ -339,6 +349,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .view_ac {
     margin: 1em;
+
     p {
         font-size: 18px;
     }
@@ -501,6 +512,7 @@ h1, h2, h3, h4, h5, h6 {
     color: white;
 }
 
+
 .zapisi-page {
     margin: 1em;
 
@@ -508,12 +520,16 @@ h1, h2, h3, h4, h5, h6 {
         margin: 1em;
 
         .zapisi-item {
+            background-color: var(--tg-theme-secondary-bg-color);
+
             .zapisi-about {
                 display: flex;
                 padding: 0.5em;
 
+
                 img {
-                    width: 30%;
+                    width: 100px;
+                    height: 150px;
                     margin-right: 0.5em;
                     object-fit: cover;
                     border-radius: 15px;
@@ -521,15 +537,20 @@ h1, h2, h3, h4, h5, h6 {
             }
 
             .zapisi-date {
-                display: flex;
 
-                p {
+                display: flex;
+                margin-bottom: 20px;
+
+                h5 {
                     width: 40%;
                     margin-right: auto;
                     margin-left: auto;
                     border-radius: 30px;
                     text-align: center;
                     font-weight: bold;
+                    background-color: var(--tg-theme-bg-color);
+                    padding: 0.2em;
+
                 }
             }
 
@@ -543,6 +564,28 @@ h1, h2, h3, h4, h5, h6 {
         }
     }
 
+}
+
+.chats_page {
+    margin: 1em;
+
+    .chats_list {
+
+
+        .chat_item {
+            background-color: var(--tg-theme-secondary-bg-color);
+            border-radius: 20px;
+            margin-bottom: 10px;
+            width: 98%;
+            margin-left: auto;
+            margin-right: auto;
+            border: var(--tg-theme-section-separator-color) solid 1px;
+
+            .chat_item_info {
+
+            }
+        }
+    }
 }
 
 .profile_page {
@@ -599,6 +642,7 @@ h1, h2, h3, h4, h5, h6 {
             border-radius: 30px;
             text-decoration: none !important;
             margin-bottom: 2em;
+            background-color: var(--tg-theme-button-color);
 
             -webkit-box-shadow: 0px 5px 10px 2px var(--tg-theme-button-color);
             -moz-box-shadow: 0px 5px 10px 2px var(--tg-theme-button-color);

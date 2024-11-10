@@ -22,6 +22,7 @@ export default function Zapisi() {
     return (
         <div className={'zapisi-page'}>
             <h1>Записи к врачам</h1>
+            <hr/>
             <div className={'zapisi-list'}>
                 <Row>
                     {items.map(item => (
@@ -31,19 +32,18 @@ export default function Zapisi() {
                                        alt="doctor"
                                        className={'zapisi-img'}/>
                                 <div className={'zapisi-name'}>
-                                    <h2>{item.name_doctor}</h2>
-                                    <h5>{item.prod}</h5>
+                                    <h3>{item.name_doctor}</h3>
+                                    <hr/>
+                                    <p>{item.prod}</p>
                                 </div>
 
                             </div>
-                            <hr/>
-                            <h3 style={{
-                                marginBottom: '1em',
-                                marginTop: '0.5em',
-                            }}>Дата записи</h3>
+                            <p style={{
+                                margin: '0.5em',
+                            }}>Дата записи</p>
                             <div className={'zapisi-date'}>
-                                <p>{item.date}</p>
-                                <p>{item.time}</p>
+                                <h5>{item.date}</h5>
+                                <h5>{item.time}</h5>
                             </div>
                         </div>
                     ))}

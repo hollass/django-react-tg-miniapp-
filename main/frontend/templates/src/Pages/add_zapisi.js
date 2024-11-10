@@ -20,19 +20,23 @@ export default function Add_zapisi() {
 
 
     return (
-        <div className={'chats_page'} style={{margin: '1em'}}>
+        <div className={'Add_zapisi_page'} style={{margin: '1em'}}>
             <h1>Специализации</h1>
 
             <hr/>
-            <div className={'chats_list'}>
+            <div className={'Add_zapisi_list'}>
                 <Row>
                     {doctor.map(item => (
                         <Link to={`/spec/${item.id}`}
                               key={item.id}>
-                            <div className={'chat_item'}
+                            <div className={'Add_zapisi_item'}
                                  style={{
                                      display: 'flex',
-                                     marginBottom: '1em'
+                                     marginBottom: '0.5em',
+                                     padding: '0.5em',
+                                     borderRadius: '20px',
+                                     backgroundColor: 'var(--tg-theme-secondary-bg-color)',
+                                     border: 'var(--tg-theme-section-separator-color) 1px solid'
                                  }}>
                                 <Image
                                     src={item.img ? item.img : 'https://ratakan.com/uploads/images/profiles/no-person.jpg'}
@@ -44,7 +48,7 @@ export default function Add_zapisi() {
                                         marginRight: '1em',
                                         objectFit: 'cover'
                                     }}/>
-                                <div className={'chat_item_info'}
+                                <div className={'Add_zapisi_item_info'}
                                      style={{
                                          color: 'black',
                                          marginBottom: 'auto',
