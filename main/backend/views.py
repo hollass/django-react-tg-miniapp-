@@ -5,18 +5,12 @@ from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from aiogram.utils.web_app import safe_parse_webapp_init_data
 
-from .config import token
 from .models import Categorie, Doctor, Price, Scheduled, Record
-import hmac
-import hashlib
 import urllib.parse
-from urllib.parse import unquote
 import json
 
 User = get_user_model()
-
 
 
 @api_view(['POST'])
@@ -25,13 +19,32 @@ def view_cats(request):
     data = Categorie.objects.all()
     cats = []
     for i in data:
+        num = Doctor.objects.filter(specialization=i.id)
         cats.append({
             'id': i.id,
             'name': i.name,
             'active': i.active,
-            'img': i.img
+            'img': i.img,
+            'num': len(num)
         })
     return Response(data=cats, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def view_spec(request):
+    req = request.data
+    data = Doctor.objects.filter(specialization=req['id'])
+    docs = []
+
+    for j in data:
+        us = User.objects.get(id=j.doctor_id)
+        docs.append({
+            'id': j.doctor_id,
+            'name': us.first_name,
+            'img': us.avatar})
+
+    return Response(data=docs, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -86,7 +99,6 @@ def view_prods(request):
 @permission_classes([AllowAny])
 def view_doc(request):
     data = request.data
-    print(data)
     id = int(data['id'])
     product = data['product']
     us = User.objects.get(id=id)
@@ -99,29 +111,33 @@ def view_doc(request):
         'name': '',
         'img': '',
         'score': '',
-        'price': []
+        'prices': []
     }
-
     if product != 'all':
+
         price = {
+            'id': '',
             'name': '',
             'price': ''
         }
         idprice = Price.objects.get(id=int(product))
         idprice = Price.objects.get(name=idprice.name, doctor=doc_id)
 
+        price['id'] = idprice.id
         price['name'] = idprice.name
         price['price'] = idprice.price
-        doc['price'].append(price)
+        doc['prices'].append(price)
     else:
         for i in doc_price:
             prices = {
+                'id': '',
                 'name': '',
                 'price': ''
             }
+            prices['id'] = i.id
             prices['name'] = i.name
             prices['price'] = i.price
-            doc['price'].append(prices)
+            doc['prices'].append(prices)
     doc['id'] = doc_id.doctor_id
     doc['name'] = us.first_name
     doc['img'] = us.avatar
@@ -159,7 +175,7 @@ def view_sched(request):
 @permission_classes([AllowAny])
 def add_record(request):
     data = request.data
-    user = User.objects.get(id=1)
+    user = User.objects.get(userid=authData(request.headers['Authorization'])[0]['id'])
     doc = Doctor.objects.get(doctor_id=data['doctor_id'])
     date = data['date']
     time = data['time']
@@ -181,11 +197,8 @@ def add_record(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def view_records(request):
-    data = request.data
-    id = int(data['id'])
-    user = User.objects.get(id=id)
-    from datetime import date
-    records = Record.objects.filter(patient=user, date__gt=date.today())
+    user = User.objects.get(userid=authData(request.headers['Authorization'])[0]['id'])
+    records = Record.objects.filter(patient=user).order_by('-date')
     records_data = []
     for i in records:
         record = {
@@ -211,13 +224,18 @@ def view_records(request):
     return Response(data=records_data, status=status.HTTP_200_OK)
 
 
+def authData(data):
+    parsed_data = urllib.parse.parse_qs(data)
+    user_data = json.loads(urllib.parse.unquote(parsed_data['user'][0]))
+    return user_data, parsed_data
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def view_main(request):
     data = request.data
-    #Регистрация
-    parsed_data = urllib.parse.parse_qs(request.headers['Authorization'])
-    user_data = json.loads(urllib.parse.unquote(parsed_data['user'][0]))
+    user_data = authData(request.headers['Authorization'])[0]
+
     if not User.objects.filter(username=user_data['id']).exists():
         user = User.objects.create_user(
             username=user_data['id'],
